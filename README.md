@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ajaia Docs
 
-## Getting Started
+A lightweight collaborative document editor: create, format, import and share documents.
 
-First, run the development server:
+- **Live app:** https://ajaia-docs-wine-nine.vercel.app
+- **Test accounts:** no passwords (auth is mocked). Use the "Signed in as" switcher: **Alice** (`alice@ajaia.test`), **Bob** (`bob@ajaia.test`), **Carol** (`carol@ajaia.test`).
+
+## What works
+
+| Area | Behaviour |
+| --- | --- |
+| Documents | Create, rename (click the title), edit in the browser, autosave (~0.8 s after typing stops), reopen from the list |
+| Formatting | Bold, italic, underline, headings H1–H3, bulleted and numbered lists, undo/redo |
+| File upload | Import a **.txt or .md** file (max 1 MB) → becomes a new editable document; Markdown headings, lists and emphasis are preserved |
+| Sharing | Owner shares by email and can remove access; shared users can edit but not re-share; home page separates **My documents** and **Shared with me** |
+| Persistence | Postgres (Neon). Documents, formatting (stored as HTML) and shares survive refresh and redeploys |
+| Quality | Input validation (title/content size, file type/size, ids), clear error messages, 8 unit tests |
+
+## Try the sharing flow (2 minutes)
+
+1. Sign in as **Alice** → **+ New document** → type and format some text → rename it.
+2. In the Sharing panel, share with `bob@ajaia.test`.
+3. Switch to **Bob** → the document appears under **Shared with me** → Bob can edit it.
+4. Switch to **Carol** → she cannot see it; opening its URL directly returns "You don't have access to this document".
+
+## Run locally
+
+Requirements: Node.js 20+, a free Postgres database (e.g. [Neon](https://neon.tech)).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ZaynSB/ajaia-docs.git
+cd ajaia-docs
+npm install
+echo DATABASE_URL=postgresql://USER:PASSWORD@HOST/DB?sslmode=require > .env.local
+npm run dev        # http://localhost:3000
+npm test           # unit tests
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tables are created and test users seeded automatically on the first request; there is no migration step.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Vercel (free) + Neon Postgres via Vercel's Storage integration, which sets `DATABASE_URL`. Push to `main` → Vercel builds and deploys.
 
-## Learn More
+## Supported imports
 
-To learn more about Next.js, take a look at the following resources:
+Only **.txt** and **.md**, up to **1 MB**. This is stated in the UI. `.docx` is a planned next step.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Docs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [ARCHITECTURE.md](ARCHITECTURE.md): design, priorities and trade-offs
+- [AI_WORKFLOW.md](AI_WORKFLOW.md): how AI tools were used and verified
+- [SUBMISSION.md](SUBMISSION.md): what is included
