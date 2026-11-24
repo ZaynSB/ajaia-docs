@@ -1,0 +1,1 @@
+asked Claude for a plan. Chose one Next.js app + Neon on Vercel over FastAPI + Next to avoid two deployments and CORS. Cut real-time editing, .docx and real auth."
