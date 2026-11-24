@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { DocEditor } from "@/components/DocEditor";
 
@@ -20,6 +20,8 @@ const SAVE_DELAY_MS = 800;
 
 export function DocView() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const [deleting, setDeleting] = useState(false);
   const [doc, setDoc] = useState<DocData | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -85,6 +87,21 @@ export function DocView() {
     );
   if (!doc) return <main className="mx-auto max-w-3xl px-4 py-10 text-gray-500">Loading…</main>;
 
+  async function deleteDoc() {
+    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (timer.current) clearTimeout(timer.current);
+    pending.current = {}; // don't autosave a document we're deleting
+    setDeleting(true);
+    const res = await fetch(`/api/documents/${id}`, { method: "DELETE" }).catch(() => null);
+    if (!res?.ok) {
+      setDeleting(false);
+      const data = await res?.json().catch(() => ({}));
+      window.alert(data?.error ?? "Couldn't delete the document");
+      return;
+    }
+    router.push("/");
+  }
+
   const status = { saved: "All changes saved", unsaved: "Unsaved changes…", saving: "Saving…", error: "Save failed. Retrying on next edit" }[save];
 
   return (
@@ -102,6 +119,15 @@ export function DocView() {
           className="min-w-0 flex-1 rounded-md border border-transparent px-2 py-1 text-xl font-semibold hover:border-gray-300 focus:border-blue-500 focus:outline-none"
         />
         <span className={`text-xs ${save === "error" ? "text-red-700" : "text-gray-500"}`} aria-live="polite">{status}</span>
+        {doc.role === "owner" && (
+          <button
+            onClick={deleteDoc}
+            disabled={deleting}
+            className="rounded-md border border-red-200 px-3 py-1 text-sm text-red-700 hover:bg-red-50 disabled:opacity-50"
+          >
+            {deleting ? "Deleting…" : "Delete"}
+          </button>
+        )}
       </div>
       <p className="mb-3 text-xs text-gray-500">
         {doc.role === "owner" ? "You own this document." : `Shared with you by ${doc.owner.name}. You can edit.`}

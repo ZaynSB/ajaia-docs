@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canEdit } from "@/lib/access";
+import { canDelete, canEdit } from "@/lib/access";
 import { sql } from "@/lib/db";
 import { loadDocWithRole, MAX_CONTENT, MAX_TITLE } from "@/lib/documents";
 import { currentUser, jsonError } from "@/lib/session";
@@ -45,4 +45,15 @@ export async function PATCH(req: Request, { params }: Ctx) {
     UPDATE documents SET title = ${title}, content = ${content}, updated_at = now()
     WHERE id = ${found.doc.id} RETURNING id, title, updated_at`;
   return NextResponse.json(rows[0]);
+}
+
+// Delete a document. Owner only; shares are removed by ON DELETE CASCADE.
+export async function DELETE(_req: Request, { params }: Ctx) {
+  const me = await currentUser();
+  if (!me) return jsonError(401, "Choose a user first");
+  const found = await loadDocWithRole((await params).id, me.id);
+  if (!found) return jsonError(404, "Document not found");
+  if (!canDelete(found.role)) return jsonError(403, "Only the owner can delete this document");
+  await sql`DELETE FROM documents WHERE id = ${found.doc.id}`;
+  return NextResponse.json({ ok: true });
 }

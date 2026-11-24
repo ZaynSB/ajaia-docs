@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canEdit, canShare, roleFor } from "./access";
+import { canDelete, canEdit, canShare, roleFor } from "./access";
 
 describe("document access rules", () => {
   const doc = { owner_id: 1 };
@@ -7,7 +7,7 @@ describe("document access rules", () => {
   it("gives the owner full rights", () => {
     const role = roleFor(doc, [], 1);
     expect(role).toBe("owner");
-    expect(canEdit(role) && canShare(role)).toBe(true);
+    expect(canEdit(role) && canShare(role) && canDelete(role)).toBe(true);
   });
 
   it("lets a shared user edit but not re-share", () => {
@@ -15,6 +15,7 @@ describe("document access rules", () => {
     expect(role).toBe("editor");
     expect(canEdit(role)).toBe(true);
     expect(canShare(role)).toBe(false);
+    expect(canDelete(role)).toBe(false);
   });
 
   it("denies a user the document was not shared with", () => {

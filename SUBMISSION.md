@@ -21,7 +21,7 @@ No passwords (mocked auth). Use the "Signed in as" switcher: Alice, Bob, Carol (
 | Automated tests | `lib/access.test.ts`, `lib/convert.test.ts` (`npm test`) |
 
 ## Status
-**Working end to end:** create, rename, rich-text editing (bold, italic, underline, H1–H3, lists), autosave and reopen; .txt/.md import into a new document; owner-based sharing by email with remove access; "My documents" vs "Shared with me"; Postgres persistence; validation and error messages; deployed on Vercel.
+**Working end to end:** create, rename, delete (owner only), rich-text editing (bold, italic, underline, H1–H3, lists), autosave and reopen; .txt/.md import into a new document; owner-based sharing by email with remove access; "My documents" vs "Shared with me"; Postgres persistence; validation and error messages; deployed on Vercel.
 
 **Incomplete / not built:** real authentication, real-time co-editing, comments, version history, .docx import, export.
 

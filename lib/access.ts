@@ -10,3 +10,4 @@ export function roleFor(doc: { owner_id: number }, sharedUserIds: number[], user
 
 export const canEdit = (role: Role | null) => role !== null;
 export const canShare = (role: Role | null) => role === "owner";
+export const canDelete = (role: Role | null) => role === "owner";

@@ -18,7 +18,7 @@ Postgres: users · documents(owner_id, title, content HTML) · document_shares(d
 | --- | --- |
 | `GET /api/users`, `POST /api/session` | List seeded users, switch user (httpOnly cookie) |
 | `GET/POST /api/documents` | Owned + shared lists; create |
-| `GET/PATCH /api/documents/:id` | Open; rename and/or save content |
+| `GET/PATCH/DELETE /api/documents/:id` | Open; rename and/or save content; delete (owner only) |
 | `POST/DELETE /api/documents/:id/share` | Owner grants / removes access by email |
 | `POST /api/upload` | .txt/.md file → new document |
 

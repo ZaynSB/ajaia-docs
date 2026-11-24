@@ -9,7 +9,7 @@ A lightweight collaborative document editor: create, format, import and share do
 
 | Area | Behaviour |
 | --- | --- |
-| Documents | Create, rename (click the title), edit in the browser, autosave (~0.8 s after typing stops), reopen from the list |
+| Documents | Create, rename (click the title), edit in the browser, autosave (~0.8 s after typing stops), reopen from the list, delete (owner only, with confirmation) |
 | Formatting | Bold, italic, underline, headings H1–H3, bulleted and numbered lists, undo/redo |
 | File upload | Import a **.txt or .md** file (max 1 MB) → becomes a new editable document; Markdown headings, lists and emphasis are preserved |
 | Sharing | Owner shares by email and can remove access; shared users can edit but not re-share; home page separates **My documents** and **Shared with me** |
